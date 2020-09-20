@@ -39,13 +39,13 @@ function getByIdProduct(req,res,next){
 }
 
 // update specific category 
-route.update('/product/:id',updateProductById);
-function updateProductById(req,res,next){
-    let id = req.params.id;
-    let data = req.bode;
-    productsCrud.update(id,data)
-    .then(updateProduct=>{
-        res.json(updateProduct);
+route.put('/product/:id',updatedProductById);
+function updatedProductById(req, res,next){
+  let id = req.params.id;
+  let data = req.body;
+  productsCrud.update(id,data)
+    .then(updatedProduct =>{
+      res.json(updatedProduct);
     })
     .catch(next);
 }

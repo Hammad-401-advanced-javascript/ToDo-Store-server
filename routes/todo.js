@@ -2,64 +2,56 @@
 
 const express = require('express');
 const route = express.Router();
-const userModel = require('../lib/models/user/users-model');
-const basicAuth = require ('../middleware/basic');
-// const OAuthMiddleware = require('./middleware/oauth');
+const productsCrud = require('../lib/models/products.js/products.collection');
 
-
-
-route.post('./signup', signUp);
-route.post('./signin',basicAuth,signIn);
-route.get('/users', allUsers);
-// route.get('/oauth',OAuthMiddleware,signInGitHub);
-
-
-
-// for signUp
-
-function signUp(req,res,next){
-    let newUser= req.body;
-    userModel.save(newUser)
+route.post('/todo',postProduct);
+function postProduct(req, res,next){
+  let data = req.body;
+  productsCrud.create(data)
+    .then(productAdded=>{
+      res.json(productAdded);
+    })
+    .catch(next);
+}
+//find All tasks (GET)
+route.get('/todo',getAllProducts);
+function getAllProducts(req, res,next){
+  productsCrud.get()
+    .then(allProducts =>{
+      res.json(allProducts);
+    })
+    .catch(next);
+}
+//find task By Id (GET)
+route.get('/todo/:id',getByIdProduct);
+function getByIdProduct(req, res,next){
+  let id = req.params.id;
+  productsCrud.get(id)
+    .then(productId =>{
+      res.json(productId);
+    })
+    .catch(next);
+}
+//update specific task By Id (PUT)
+route.put('/todo/:id',updatedProductById);
+function updatedProductById(req, res,next){
+  let id = req.params.id;
+  let data = req.body;
+  productsCrud.update(id,data)
+    .then(updatedProduct =>{
+      res.json(updatedProduct);
+    })
+    .catch(next);
+}
+// delete specific task By Id (DELETE)
+route.delete('/todo/:id',deleteProduct);
+function deleteProduct(req, res,next){
+  let id = req.params.id;
+  productsCrud.delete(id)
     .then(result =>{
-        let token = userModel.generateToken(result);
-        res.cookie('token', token ,{
-            expires : new Date(Date.now() + 9999999),
-            httpOnly: false,
-        });
-        res.status(200).send({token:token});
+      res.json({delete:`you delete the category has Id: ${id}`});
     })
-    .catch(()=>{
-        res.json({error:'This userName is taken'});
-    })
+    .catch(next);
 }
-
-
-// for signIn
-
-function signIn(req,res,next){
-    res.cookie('token',req.token,{
-        expires: new Date(Date.now() + 9999999),
-        httpOnly : false,
-    })
-}
-
-//  get all users
-function allUsers(req,res,next){
-    userModel.allUsers()
-    .then(result =>{
-        res.json(result);
-    });
-}
-
-
-	// for oauth route
-// function signInGitHub(req,res){
-//   res.cookie('token', req.token, {
-//     expires  : new Date(Date.now() + 9999999),
-//     httpOnly : false,
-//   });
-//   res.status(200).send({  token: req.token });
-// }
-
-
-module.exports = routes;
+  
+module.exports = route;
