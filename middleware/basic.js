@@ -22,4 +22,4 @@ function authSingIn(req,res,next){
     });
 }
 
-module.exports = authSignIn;
+module.exports = authSingIn;
