@@ -4,7 +4,7 @@ const mongoose= require('mongoose');
 const serverMod= require('./lib/server');
 
 serverMod.start();
-const MONGO_URL='mongodb+srv://Hammad:Hammad@1995@cluster0.hsvpu.mongodb.net/ToDo?retryWrites=true&w=majority'
+const MONGO_URL='mongodb://localhost:27017/Todo-api-local'
 
 const mongooseOptions={
     useUnifiedTopology: true,
